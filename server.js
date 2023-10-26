@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const { clog } = require('./middleware/clog');
 const api = require('./routes/index.js');
+const diagnostics = require('./db/diagnostics.json');
 
 const PORT = process.env.port || 3001;
 
@@ -26,6 +27,22 @@ app.get('/', (req, res) =>
 app.get('/feedback', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/pages/feedback.html'))
 );
+
+// GET Route for API Diagnostics
+app.post('/api/diagnostics', (req, res) => {
+  return res.json(diagnostics)
+});
+
+// GET Route for wildcard
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/pages/404.html"));
+});
+
+// POST Route
+app.post('/api/diagnostics', (req, res) => {
+  res.json(`${req.method} request received`);
+  // Needs to store information about the invalid form submission
+});
 
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT} 🚀`)
